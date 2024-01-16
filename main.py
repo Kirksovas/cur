@@ -379,7 +379,7 @@ def initialize_menu():
     BaseCanvas.pack(fill=tk.X, pady=0)
 
     # Создаем меню прямоугольник
-    MenuCanvas = ctk.CTkCanvas(BaseCanvas, width=1000, height=100, bg="#196E9C", highlightthickness=0, bd=0)
+    MenuCanvas = ctk.CTkCanvas(BaseCanvas, width=820, height=100, bg="#196E9C", highlightthickness=0, bd=0)
     MenuCanvas.pack(fill=tk.X, pady=50)
 
     # Налагаем MenuCanvas на BaseCanvas
