@@ -49,20 +49,24 @@ def create_news():
         titleNews1_text = "Заголовок не найден"
         descNews1_text = "Описание не найдено"
 
+    # Создаем Frame для текста и изображения
+    frame1 = tk.Frame(NewsCanva, bg="#4F9BE1", bd=0)
+    frame1.pack(side=tk.LEFT, padx=10, pady=40)
+
     # Создаем лейбл с заголовком
-    titleNews1 = tk.Label(NewsCanva, text=titleNews1_text, font=("Helvetica", 20))
-    titleNews1.place(x=10, y=20)
+    titleNews1 = tk.Label(frame1, text=titleNews1_text, font=("Helvetica", 20), bg="#4F9BE1")
+    titleNews1.pack()
 
     # Создаем Text с описанием
-    descNews1 = tk.Text(NewsCanva, font=("Helvetica", 20), wrap="word", width=60, height=5)
+    descNews1 = tk.Text(frame1, font=("Helvetica", 20), wrap="word", width=60, height=5, bg="#4F9BE1", bd=0)
     descNews1.insert(tk.END, descNews1_text)
     descNews1.configure(state="disabled", bd=0, highlightthickness=0)
-    descNews1.place(x=10, y=100)
+    descNews1.pack()
 
     # Загружаем изображение логотипа
     new1 = ctk.CTkImage(light_image=Image.open("image/Group_252.png"), size=(250, 250))
-    image_label = ctk.CTkLabel(master=NewsCanva, image=new1, text="")
-    image_label.place(x=1500, y=15)
+    image_label1 = ctk.CTkLabel(master=NewsCanva, image=new1, text="")
+    image_label1.pack(side=tk.RIGHT, padx=40)
 
     # Создаем основной прямоугольник2
     NewsCanva2 = ctk.CTkCanvas(root, width=500, height=300, bg="#4F9BE1")
@@ -79,24 +83,32 @@ def create_news():
         titleNews2_text = "Заголовок не найден"
         descNews2_text = "Описание не найдено"
 
+    # Создаем Frame для текста и изображения
+    frame2 = tk.Frame(NewsCanva2, bg="#4F9BE1", bd=0)
+    frame2.pack(side=tk.LEFT, padx=10, pady=40)
+
     # Создаем лейбл с заголовком
-    titleNews2 = tk.Label(NewsCanva2, text=titleNews2_text, font=("Helvetica", 20))
-    titleNews2.place(x=10, y=20)
+    titleNews2 = tk.Label(frame2, text=titleNews2_text, font=("Helvetica", 20), bg="#4F9BE1")
+    titleNews2.pack()
 
     # Создаем Text с описанием
-    descNews2 = tk.Text(NewsCanva2, font=("Helvetica", 20), wrap="word", width=60, height=5)
+    descNews2 = tk.Text(frame2, font=("Helvetica", 20), wrap="word", width=60, height=5, bg="#4F9BE1", bd=0)
     descNews2.insert(tk.END, descNews2_text)
     descNews2.configure(state="disabled", bd=0, highlightthickness=0)
-    descNews2.place(x=10, y=100)
+    descNews2.pack()
 
     # Загружаем изображение логотипа
     new2 = ctk.CTkImage(light_image=Image.open("image/Group_253.png"), size=(250, 250))
-    image_label = ctk.CTkLabel(master=NewsCanva2, image=new2, text="")
-    image_label.place(x=1500, y=15)
+    image_label2 = ctk.CTkLabel(master=NewsCanva2, image=new2, text="")
+    image_label2.pack(side=tk.RIGHT, padx=40)
+
 def create_shed():
-     # Создаем основной прямоугольник
+    # Создаем основной прямоугольник
     ShedCanva = ctk.CTkCanvas(root, width=500, height=300, bg="#4F9BE1")
     ShedCanva.pack(fill=tk.X, pady=0)
+
+    # Получаем ширину экрана
+    screen_width = root.winfo_screenwidth()
 
     # Выполняем запрос к базе данных
     cursor.execute('SELECT title_New, desc_new FROM New WHERE id_New = 1')
@@ -109,16 +121,21 @@ def create_shed():
         titleNews1_text = "Заголовок не найден"
         descNews1_text = "Описание не найдено"
 
+    # Создаем Frame для текста и изображения
+    frame1 = tk.Frame(ShedCanva, bg="#4F9BE1", bd=0)
+    frame1.pack(side=tk.LEFT, padx=10, pady=40)
+
     # Создаем лейбл с заголовком
-    titleNews1 = tk.Label(ShedCanva, text=titleNews1_text, font=("Helvetica", 20))
-    titleNews1.place(x=10, y=20)
+    titleNews1 = tk.Label(frame1, text=titleNews1_text, font=("Helvetica", 20), bg="#4F9BE1")
+    titleNews1.pack(padx=5, pady=50)
 
     # Создаем Text с описанием
-    descNews1 = tk.Text(ShedCanva, font=("Helvetica", 20), wrap="word", width=60, height=5)
+    descNews1 = tk.Text(frame1, font=("Helvetica", 20), wrap="word", width=60, height=5, bg="#4F9BE1", bd=0)
     descNews1.insert(tk.END, descNews1_text)
     descNews1.configure(state="disabled", bd=0, highlightthickness=0)
-    descNews1.place(x=10, y=100)
+    descNews1.pack()
 
+    # Выполняем запрос к базе данных для расписания
     cursor.execute('SELECT date, time FROM Schedule WHERE id_New = 1')
     result = cursor.fetchone()
 
@@ -126,26 +143,30 @@ def create_shed():
     if result:
         date1_text, time1_text = result
     else:
-        date1_text = "Заголовок не найден"
-        time1_text = "Описание не найдено"
-    # Создаем лейбл с заголовком
-    dateNews1 = tk.Label(ShedCanva, text=date1_text, font=("Helvetica", 20))
-    dateNews1.place(x=700, y=20)
+        date1_text = "Дата не найдена"
+        time1_text = "Время не найдено"
 
-    # Создаем лейбл с заголовком
-    time1 = tk.Label(ShedCanva, text=time1_text, font=("Helvetica", 20))
-    time1.place(x=900, y=20)
+    # Создаем лейблы с датой и временем
+    dateNews1 = tk.Label(ShedCanva, text=date1_text, font=("Helvetica", 20), bg="#4F9BE1")
+    dateNews1.pack(pady=5)
+
+    time1 = tk.Label(ShedCanva, text=time1_text, font=("Helvetica", 20), bg="#4F9BE1")
+    time1.pack()
 
     # Загружаем изображение логотипа
     new1 = ctk.CTkImage(light_image=Image.open("image/Group_252.png"), size=(250, 250))
-    new1 = ctk.CTkLabel(master=ShedCanva, image=new1, text="")
-    new1.place(x=1500, y=15)
+    image_label1 = ctk.CTkLabel(master=ShedCanva, image=new1, text="")
+    
+    # Рассчитываем позицию изображения относительно ширины экрана
+    image_position1 = min(screen_width - 90 - 50, 50)
+    
+    image_label1.pack(side=tk.RIGHT, padx=image_position1, pady=10)  # Увеличили отступ до 10 пикселей
 
     # Создаем основной прямоугольник2
     ShedCanva2 = ctk.CTkCanvas(root, width=500, height=300, bg="#4F9BE1")
     ShedCanva2.pack(fill=tk.X, pady=10)
 
-    # Выполняем запрос к базе данных
+    # Выполняем запрос к базе данных для второго элемента расписания
     cursor.execute('SELECT title_New, desc_new FROM New WHERE id_New = "2"')
     result = cursor.fetchone()
 
@@ -156,32 +177,46 @@ def create_shed():
         titleNews2_text = "Заголовок не найден"
         descNews2_text = "Описание не найдено"
 
+    # Создаем Frame для текста и изображения
+    frame2 = tk.Frame(ShedCanva2, bg="#4F9BE1", bd=0)
+    frame2.pack(side=tk.LEFT, padx=10, pady=40)
+
     # Создаем лейбл с заголовком
-    titleNews2 = tk.Label(ShedCanva2, text=titleNews2_text, font=("Helvetica", 20))
-    titleNews2.place(x=10, y=20)
+    titleNews2 = tk.Label(frame2, text=titleNews2_text, font=("Helvetica", 20), bg="#4F9BE1")
+    titleNews2.pack()
 
     # Создаем Text с описанием
-    descNews2 = tk.Text(ShedCanva2, font=("Helvetica", 20), wrap="word", width=60, height=5)
+    descNews2 = tk.Text(frame2, font=("Helvetica", 20), wrap="word", width=60, height=5, bg="#4F9BE1", bd=0)
     descNews2.insert(tk.END, descNews2_text)
     descNews2.configure(state="disabled", bd=0, highlightthickness=0)
-    descNews2.place(x=10, y=100)
+    descNews2.pack()
+
+    # Выполняем запрос к базе данных для второго элемента расписания
     cursor.execute('SELECT date, time FROM Schedule WHERE id_New = 2')
     result = cursor.fetchone()
+
     # Проверяем, есть ли данные
     if result:
         date2_text, time2_text = result
     else:
-        date2_text = "Заголовок не найден"
-        time2_text = "Описание не найдено"
-    dateNews2 = tk.Label(ShedCanva2, text=date2_text, font=("Helvetica", 20))
-    dateNews2.place(x=650, y=20)
-    # Создаем лейбл с заголовком
-    time2 = tk.Label(ShedCanva2, text=time2_text, font=("Helvetica", 20))
-    time2.place(x=850, y=20)
-    
+        date2_text = "Дата не найдена"
+        time2_text = "Время не найдено"
+
+    # Создаем лейблы с датой и временем
+    dateNews2 = tk.Label(ShedCanva2, text=date2_text, font=("Helvetica", 20), bg="#4F9BE1")
+    dateNews2.pack(pady=5)
+
+    time2 = tk.Label(ShedCanva2, text=time2_text, font=("Helvetica", 20), bg="#4F9BE1")
+    time2.pack()
+
+    # Загружаем изображение логотипа
     new2 = ctk.CTkImage(light_image=Image.open("image/Group_253.png"), size=(250, 250))
-    new2 = ctk.CTkLabel(master=ShedCanva2, image=new2, text="")
-    new2.place(x=1500, y=20)
+    image_label2 = ctk.CTkLabel(master=ShedCanva2, image=new2, text="")
+    
+    # Рассчитываем позицию изображения относительно ширины экрана
+    image_position2 = min(screen_width - 10 - 50, 50)
+    
+    image_label2.pack(side=tk.RIGHT, padx=image_position2, pady=10)  # Увеличили отступ до 10 пикселей
 def create_adress():
     # Создаем основной прямоугольник
     adressCanva = ctk.CTkCanvas(root, width=500, height=300, bg="#4F9BE1")
@@ -197,16 +232,21 @@ def create_adress():
     else:
         titleNews1_text = "Заголовок не найден"
         descNews1_text = "Описание не найдено"
-
+        
+    # Загружаем изображение логотипа
+    new1 = ctk.CTkImage(light_image=Image.open("image/Group_252.png"), size=(250, 250))
+    new1_label = ctk.CTkLabel(master=adressCanva, image=new1, text="")
+    new1_label.pack(side=tk.RIGHT, padx=60, pady=40)
+    
     # Создаем лейбл с заголовком
-    titleNews1 = tk.Label(adressCanva, text=titleNews1_text, font=("Helvetica", 20))
-    titleNews1.place(x=10, y=20)
+    titleNews1 = tk.Label(adressCanva, text=titleNews1_text, font=("Helvetica", 20), bg="#4F9BE1")
+    titleNews1.pack(side=tk.TOP, padx=10, pady=20)
 
     # Создаем Text с описанием
-    descNews1 = tk.Text(adressCanva, font=("Helvetica", 20), wrap="word", width=60, height=5)
+    descNews1 = tk.Text(adressCanva, font=("Helvetica", 20), wrap="word", width=60, height=5, bg="#4F9BE1")
     descNews1.insert(tk.END, descNews1_text)
     descNews1.configure(state="disabled", bd=0, highlightthickness=0)
-    descNews1.place(x=10, y=100)
+    descNews1.pack(side=tk.TOP, padx=10, pady=20)
 
     cursor.execute('SELECT country, town, street, house_number FROM Address WHERE id_New = "1"')
     result = cursor.fetchone()
@@ -218,26 +258,23 @@ def create_adress():
         town_text = "Заголовок не найден"
         street_text = "Заголовок не найден"
         house_number_text = "Заголовок не найден"
-    # Создаем лейбл с заголовком
-    countryNews1 = tk.Label(adressCanva, text=country_text, font=("Helvetica", 20))
-    countryNews1.place(x=650, y=20)
 
-    # Создаем лейбл с заголовком
-    town = tk.Label(adressCanva, text=town_text, font=("Helvetica", 20))
-    town.place(x=700, y=20)
+    # Создаем лейбл "Адрес:"
+    address_label = tk.Label(adressCanva, text="Адрес:", font=("Helvetica", 20), bg="#4F9BE1")
+    address_label.pack(side=tk.LEFT, padx=50, pady=20)
 
-    # Создаем лейбл с заголовком
-    street = tk.Label(adressCanva, text=street_text, font=("Helvetica", 20))
-    street.place(x=940, y=20)
+    # Создаем лейблы с заголовком
+    countryNews1 = tk.Label(adressCanva, text=country_text, font=("Helvetica", 20), bg="#4F9BE1")
+    countryNews1.pack(side=tk.LEFT, padx=30, pady=20)
 
-    # Создаем лейбл с заголовком
-    house_number = tk.Label(adressCanva, text=house_number_text, font=("Helvetica", 20))
-    house_number.place(x=1190, y=20)
+    town = tk.Label(adressCanva, text=town_text, font=("Helvetica", 20), bg="#4F9BE1")
+    town.pack(side=tk.LEFT, padx=30, pady=20)
 
-    # Загружаем изображение логотипа
-    new1 = ctk.CTkImage(light_image=Image.open("image/Group_252.png"), size=(250, 250))
-    new1 = ctk.CTkLabel(master=adressCanva, image=new1, text="")
-    new1.place(x=1500, y=15)
+    street = tk.Label(adressCanva, text=street_text, font=("Helvetica", 20), bg="#4F9BE1")
+    street.pack(side=tk.LEFT, padx=30, pady=20)
+
+    house_number = tk.Label(adressCanva, text=house_number_text, font=("Helvetica", 20), bg="#4F9BE1")
+    house_number.pack(side=tk.LEFT, padx=30, pady=20)
 
 def players():
     # Создание виджета Treeview
@@ -259,7 +296,7 @@ def players():
         tree.insert("", "end", values=row)
 
     # Размещение виджета Treeview в центре окна
-    tree.place(x=300, y= 170)
+    tree.pack(side=tk.TOP, pady=170, padx=(10, 10), anchor="center")
 def create_players():
     # Создание виджета Treeview
     tree = ttk.Treeview(root, columns=("id", "name", "second_Name", "patronic", "sex", "age", "specialization"), show="headings")
@@ -273,29 +310,29 @@ def create_players():
     tree.heading("age", text="Возраст")
     tree.heading("specialization", text="Специализация")
 
-    # Размещение виджета Treeview в центре окна
-    tree.place(x=300, y=170)
+    # Размещение виджета Treeview в центре окна с использованием pack
+    tree.pack(side=tk.TOP, padx=10, pady=10)
 
-    # Создаем лейбл "Форма регистрации"
+    # Добавляем лейбл "Форма регистрации"
     registration_label = tk.Label(root, text="Форма регистрации", font=("Helvetica", 16))
-    registration_label.place(x=820, y=450)
+    registration_label.pack(side=tk.TOP, padx=10, pady=10)
 
     # Добавляем форму регистрации игрока
     label_texts = ["Имя", "Фамилия", "Отчество", "Пол", "Возраст", "Специализация"]
     entries = {}
 
-    for i, label_text in enumerate(label_texts):
+    for label_text in label_texts:
         label = tk.Label(root, text=label_text)
-        label.place(x=820, y=500 + i * 40)
+        label.pack(side=tk.TOP, padx=10, pady=5)
 
         entry = ttk.Entry(root)
-        entry.place(x=930, y=500 + i * 40)
+        entry.pack(side=tk.TOP, padx=10, pady=5)
 
         entries[label_text] = entry
 
     # Создание кнопки для сохранения данных
     save_button = tk.Button(root, text="Сохранить", command=lambda: save_data(entries, tree))
-    save_button.place(x=900, y=520 + len(label_texts) * 40)
+    save_button.pack(side=tk.TOP, padx=10, pady=10)
 
     for item in tree.get_children():
         tree.delete(item)
@@ -309,16 +346,15 @@ def create_players():
         tree.insert("", "end", values=row)
 
 def create_spec():
-
     # Создание Treeview
     tree = ttk.Treeview(root)
     tree["columns"] = ("Номер", "Название", "Описание")
     
     tree.heading("Номер", text="Номер")
-    tree.column("Номер", anchor="center", width=100)
+    tree.column("Номер", anchor="center", width=50)
 
     tree.heading("Название", text="Название")
-    tree.column("Название", anchor="center", width=300)
+    tree.column("Название", anchor="center", width=150)
 
     tree.heading("Описание", text="Описание")
     tree.column("Описание", anchor="center", width=1000)
@@ -328,7 +364,9 @@ def create_spec():
     specialization = cursor.fetchall()
     for row in specialization:
         tree.insert("", "end", values=row)
-    tree.place(x=150, y= 170)  
+
+    # Размещение виджета Treeview в центре окна
+    tree.pack( fill="both", padx=30, pady=10)  
 
 def save_data(entries, tree):
     try:
