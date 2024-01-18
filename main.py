@@ -278,7 +278,7 @@ def create_players():
 
         entries[label_text] = entry
 
-    specialization_label = tk.Label(root, text="Специализация", bg="#b1dcfc")
+    specialization_label = tk.Label(root, text="Дисциплины", bg="#b1dcfc")
     specialization_label.pack(side=tk.TOP, padx=10, pady=5)
 
     cursor.execute("SELECT title_specialization FROM specialization")
@@ -291,10 +291,10 @@ def create_players():
     specialization_menu = tk.OptionMenu(root, specialization_var, *specialization_options)
     specialization_menu.pack(side=tk.TOP, padx=10, pady=5)
 
-    entries["Специализация"] = specialization_var
+    entries["Дисциплины"] = specialization_var
 
 
-    save_button = tk.Button(root, text="Сохранить", command=lambda: save_data(entries, tree), bg="#B0E8FF", width=20, border=1)
+    save_button = tk.Button(root, text="Сохранить", command=lambda: save_data(entries, tree), bg="#4F9BE1", width=20, border=1, fg="white")
     save_button.pack(side=tk.TOP, padx=10, pady=10)
 
     for item in tree.get_children():
@@ -378,9 +378,9 @@ def initialize_menu():
     # Создаем кнопки
     button_texts = [
         "Дата проведения",
-        "Участники",
         "Место проведения",
         "Дисциплины",
+        "Участники",
         "Подать заявку"
     ]
     x_position = 10
