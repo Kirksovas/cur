@@ -263,14 +263,14 @@ def create_players():
 
     tree.pack(side=tk.TOP, padx=10, pady=10)
 
-    registration_label = tk.Label(root, text="Форма регистрации", font=("Helvetica", 16))
+    registration_label = tk.Label(root, text="Форма регистрации", font=("Helvetica", 16), bg="#b1dcfc")
     registration_label.pack(side=tk.TOP, padx=10, pady=10)
 
     label_texts = ["Имя", "Фамилия", "Отчество", "Пол", "Возраст"]
     entries = {}
 
     for label_text in label_texts:
-        label = tk.Label(root, text=label_text)
+        label = tk.Label(root, text=label_text, bg="#b1dcfc")
         label.pack(side=tk.TOP, padx=10, pady=5)
 
         entry = ttk.Entry(root)
@@ -278,7 +278,7 @@ def create_players():
 
         entries[label_text] = entry
 
-    specialization_label = tk.Label(root, text="Специализация")
+    specialization_label = tk.Label(root, text="Специализация", bg="#b1dcfc")
     specialization_label.pack(side=tk.TOP, padx=10, pady=5)
 
     cursor.execute("SELECT title_specialization FROM specialization")
@@ -294,7 +294,7 @@ def create_players():
     entries["Специализация"] = specialization_var
 
 
-    save_button = tk.Button(root, text="Сохранить", command=lambda: save_data(entries, tree))
+    save_button = tk.Button(root, text="Сохранить", command=lambda: save_data(entries, tree), bg="#B0E8FF", width=20, border=1)
     save_button.pack(side=tk.TOP, padx=10, pady=10)
 
     for item in tree.get_children():
@@ -362,22 +362,20 @@ def update_players_tree(tree):
     for row in players:
         tree.insert("", "end", values=row)
     
-
 def initialize_menu():
     clear_window()
 
     BaseCanvas = ctk.CTkCanvas(root, width=500, height=150, bg="#17658F")
     BaseCanvas.pack(fill=tk.X, pady=0)
 
-    MenuCanvas = ctk.CTkCanvas(BaseCanvas, width=820, height=100, bg="#196E9C", highlightthickness=0, bd=0)
-    MenuCanvas.pack(fill=tk.X, pady=50)
-
-    BaseCanvas.create_window(600, 40, anchor=tk.NW, window=MenuCanvas)
-
     my_image = ctk.CTkImage(light_image=Image.open("image/loll.png"), size=(110, 110))
     image_label = ctk.CTkLabel(master=BaseCanvas, image=my_image, text="")
     image_label.place(x=10, y=10)
 
+    MenuCanvas = ctk.CTkCanvas(BaseCanvas, width=820, height=100, bg="#196E9C", highlightthickness=0, bd=0)
+    MenuCanvas.place(x=500, y=45)
+
+    # Создаем кнопки
     button_texts = [
         "Дата проведения",
         "Участники",
@@ -388,12 +386,17 @@ def initialize_menu():
     x_position = 10
     for text in button_texts:
         CTkButton = ctk.CTkButton(MenuCanvas, height=40, text=text, fg_color="#1D82B8", compound="bottom", command=lambda t=text: create_content(t))
-        MenuCanvas.create_window(x_position, 50, anchor=tk.W, window=CTkButton)
+        CTkButton.pack(side=tk.LEFT, padx=10, pady=10)
         x_position += CTkButton.winfo_reqwidth() + 25
+
     create_news()
 
 
-root = ctk.CTk()
+
+
+
+root = tk.Tk()
+root.configure(background="#b1dcfc")
 root.title("Всероссийские игры умных городов!")
 root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
 
