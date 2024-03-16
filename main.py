@@ -345,6 +345,7 @@ def create_players():
 
         entries[label_text] = entry
 
+<<<<<<< HEAD
     # Создание поля для ввода возраста
     age_label = tk.Label(root, text="Возраст", bg="#b1dcfc")
     age_label.pack(side=tk.TOP, padx=10, pady=5)
@@ -373,6 +374,9 @@ def create_players():
     entries["Пол"] = sex_var
 
     specialization_label = tk.Label(root, text="Дисциплина", bg="#b1dcfc")
+=======
+    specialization_label = tk.Label(root, text="Дисциплины", bg="#b1dcfc")
+>>>>>>> 305d046c61fa245646e3de896a14a70217a4de6b
     specialization_label.pack(side=tk.TOP, padx=10, pady=5)
 
     cursor.execute("SELECT title_specialization FROM specialization")
@@ -385,9 +389,14 @@ def create_players():
     specialization_menu = tk.OptionMenu(root, specialization_var, *specialization_options)
     specialization_menu.pack(side=tk.TOP, padx=10, pady=5)
 
-    entries["Специализация"] = specialization_var
+    entries["Дисциплины"] = specialization_var
 
+<<<<<<< HEAD
     save_button = tk.Button(root, text="Сохранить", command=lambda: save_data(entries, tree), bg="#B0E8FF", width=20, border=1)
+=======
+
+    save_button = tk.Button(root, text="Сохранить", command=lambda: save_data(entries, tree), bg="#4F9BE1", width=20, border=1, fg="white")
+>>>>>>> 305d046c61fa245646e3de896a14a70217a4de6b
     save_button.pack(side=tk.TOP, padx=10, pady=10)
 
     for item in tree.get_children():
@@ -515,9 +524,9 @@ def initialize_menu():
     # Создаем кнопки
     button_texts = [
         "Дата проведения",
-        "Участники",
         "Место проведения",
         "Дисциплины",
+        "Участники",
         "Подать заявку"
     ]
     x_position = 10
