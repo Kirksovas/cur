@@ -4,6 +4,7 @@ import customtkinter as ctk
 import tkinter.messagebox as tkmessagebox
 from PIL import ImageTk, Image
 import sqlite3
+import re
 
 connection = sqlite3.connect('db/games.db')
 cursor = connection.cursor()
@@ -230,11 +231,10 @@ def create_adress():
 
     house_number = tk.Label(adressCanva, text=house_number_text, font=("Helvetica", 20), bg="#4F9BE1")
     house_number.pack(side=tk.LEFT, padx=30, pady=20)
-
 def players():
+    
 
     tree = ttk.Treeview(root, columns=("id", "name", "second_Name", "patronic", "sex", "age", "specialization"), show="headings")
-
     tree.heading("id", text="Номер")
     tree.heading("name", text="Имя")
     tree.heading("second_Name", text="Фамилия")
@@ -242,43 +242,137 @@ def players():
     tree.heading("sex", text="Пол")
     tree.heading("age", text="Возраст")
     tree.heading("specialization", text="Специализация")
+
+    def sort_tree(column_index, descending):
+        column = tree["columns"][column_index]
+        russian_column = column_names_dict.get(column, column)
+        data = [(int(tree.set(child, column)), child) if column == "id" or column == "age" else (tree.set(child, column), child) for child in tree.get_children("")]
+        data.sort(reverse=descending)
+        for i, item in enumerate(data):
+            tree.move(item[1], "", i)
+
+    def on_sort(column_index, descending):
+        sort_tree(column_index, descending)
+
+    def update_columns():
+        combo["values"] = russian_column_names  
+
+    russian_column_names = [
+        "Номер",
+        "Имя",
+        "Фамилия",
+        "Отчество",
+        "Пол",
+        "Возраст",
+        "Специализация"
+    ]
+
+    column_names_dict = {
+        "id": "Номер",
+        "name": "Имя",
+        "second_Name": "Фамилия",
+        "patronic": "Отчество",
+        "sex": "Пол",
+        "age": "Возраст",
+        "specialization": "Специализация"
+    }
+    
+    frame = tk.Frame(root, bg="#BAD7DF")  
+    frame.pack(side=tk.TOP, pady=10)  
+
+    combo = ttk.Combobox(frame, values=russian_column_names, state="readonly", width=15)
+    combo.pack(side=tk.LEFT, padx=5)  
+
+    def update_combobox_text(event):
+        selected_column = combo.get() 
+        russian_name = column_names_dict.get(selected_column, "")  
+        combo.set(russian_name) 
+
+    combo.bind("<FocusOut>", update_combobox_text)
+
+    btn_sort_asc = tk.Button(frame, text="\u2191", command=lambda: on_sort(combo.current(), False))
+    btn_sort_asc.pack(side=tk.LEFT, padx=5) 
+
+    btn_sort_desc = tk.Button(frame, text="\u2193", command=lambda: on_sort(combo.current(), True))
+    btn_sort_desc.pack(side=tk.LEFT, padx=5)
+
+    tree.pack(side=tk.TOP, pady=10, padx=10) 
+
+    tree.bind("<Configure>", lambda event: update_columns())
 
     cursor.execute("SELECT id_Players, name, second_Name, patronic, sex, age, specialization FROM Players")
-    players = cursor.fetchall()
-    for row in players:
+    players_data = cursor.fetchall()
+    for row in players_data:
         tree.insert("", "end", values=row)
 
-    tree.pack(side=tk.TOP, pady=170, padx=(10, 10), anchor="center")
+def save_data(entries, tree):
+    for key, value in entries.items():
+        if key != "Отчество" and not value.get(): 
+            tkmessagebox.showerror("Ошибка", f"Поле '{key}' не заполнено")
+            return
+    tkmessagebox.showinfo("Успех", "Данные успешно сохранены")
+    for item in tree.get_children():
+        tree.delete(item)
+
+
 def create_players():
-
     tree = ttk.Treeview(root, columns=("id", "name", "second_Name", "patronic", "sex", "age", "specialization"), show="headings")
-
     tree.heading("id", text="Номер")
     tree.heading("name", text="Имя")
     tree.heading("second_Name", text="Фамилия")
     tree.heading("patronic", text="Отчество")
     tree.heading("sex", text="Пол")
     tree.heading("age", text="Возраст")
-    tree.heading("specialization", text="Специализация")
-
+    tree.heading("specialization", text="Дисциплина")
     tree.pack(side=tk.TOP, padx=10, pady=10)
 
     registration_label = tk.Label(root, text="Форма регистрации", font=("Helvetica", 16), bg="#b1dcfc")
     registration_label.pack(side=tk.TOP, padx=10, pady=10)
 
-    label_texts = ["Имя", "Фамилия", "Отчество", "Пол", "Возраст"]
+    label_texts = ["Имя", "Фамилия", "Отчество"]
     entries = {}
 
     for label_text in label_texts:
         label = tk.Label(root, text=label_text, bg="#b1dcfc")
         label.pack(side=tk.TOP, padx=10, pady=5)
 
-        entry = ttk.Entry(root)
+        entry = ttk.Entry(root, validate="key")
         entry.pack(side=tk.TOP, padx=10, pady=5)
+        entry.config(validatecommand=(root.register(lambda P: len(P) <= 50 and P.strip() == P), '%P'))
+
+        # Всплывающее сообщение
+        Tooltip(entry, f"Максимум 50 символов для поля '{label_text}'")
 
         entries[label_text] = entry
 
-    specialization_label = tk.Label(root, text="Специализация", bg="#b1dcfc")
+    # Создание поля для ввода возраста
+    age_label = tk.Label(root, text="Возраст", bg="#b1dcfc")
+    age_label.pack(side=tk.TOP, padx=10, pady=5)
+
+    age_entry = ttk.Entry(root, validate="key")
+    age_entry.pack(side=tk.TOP, padx=10, pady=5)
+
+    age_entry.config(validatecommand=(root.register(lambda P: len(P) <= 3 and P.strip() == P), '%P'))
+    entries["Возраст"] = age_entry
+
+    age_tooltip_text = "Допустимый возраст от 12 до 100 лет"
+    Tooltip(age_entry, age_tooltip_text)
+
+    # Создание чекбокса для поля "Пол"
+    sex_label = tk.Label(root, text="Пол", bg="#b1dcfc")
+    sex_label.pack(side=tk.TOP, padx=10, pady=5)
+
+    sex_var = tk.StringVar(root, "Мужской")  # По умолчанию выбрано "Мужской"
+
+    male_checkbox = tk.Radiobutton(root, text="Мужской", variable=sex_var, value="Мужской", bg="#b1dcfc")
+    male_checkbox.pack(side=tk.TOP, padx=10, pady=2)
+
+    female_checkbox = tk.Radiobutton(root, text="Женский", variable=sex_var, value="Женский", bg="#b1dcfc")
+    female_checkbox.pack(side=tk.TOP, padx=10, pady=2)
+
+    entries["Пол"] = sex_var
+
+    specialization_label = tk.Label(root, text="Дисциплина", bg="#b1dcfc")
     specialization_label.pack(side=tk.TOP, padx=10, pady=5)
 
     cursor.execute("SELECT title_specialization FROM specialization")
@@ -293,7 +387,6 @@ def create_players():
 
     entries["Специализация"] = specialization_var
 
-
     save_button = tk.Button(root, text="Сохранить", command=lambda: save_data(entries, tree), bg="#B0E8FF", width=20, border=1)
     save_button.pack(side=tk.TOP, padx=10, pady=10)
 
@@ -306,9 +399,28 @@ def create_players():
     for row in players:
         tree.insert("", "end", values=row)
 
-
     tree.pack_forget()
 
+class Tooltip:
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tooltip = None
+        self.widget.bind("<Enter>", self.show_tooltip)
+        self.widget.bind("<Leave>", self.hide_tooltip)
+
+    def show_tooltip(self, event):
+        x = self.widget.winfo_rootx() + self.widget.winfo_width()
+        y = self.widget.winfo_rooty() - 20
+        self.tooltip = tk.Toplevel(self.widget)
+        self.tooltip.wm_overrideredirect(True)
+        self.tooltip.wm_geometry(f"+{x}+{y}")
+        label = tk.Label(self.tooltip, text=self.text, background="#FFFFE0", relief="solid", borderwidth=1)
+        label.pack(ipadx=5)
+
+    def hide_tooltip(self, event):
+        if self.tooltip:
+            self.tooltip.destroy()
 def create_spec():
     tree = ttk.Treeview(root)
     tree["columns"] = ("Номер", "Название", "Описание")
@@ -330,20 +442,44 @@ def create_spec():
     tree.pack( fill="both", padx=30, pady=10)  
 
 def save_data(entries, tree):
-    name = entries["Имя"].get()
-    second_name = entries["Фамилия"].get()
-    patronic = entries["Отчество"].get()
+    name = entries["Имя"].get().strip()
+    second_name = entries["Фамилия"].get().strip()
+    patronic = entries["Отчество"].get().strip()
     sex = entries["Пол"].get()
-    age = entries["Возраст"].get()
+    age = entries["Возраст"].get().strip()
     specialization = entries["Специализация"].get()
 
-    if not all([name, second_name, patronic, sex, age, specialization]):
-        tk.messagebox.showerror("Ошибка", "Все поля формы должны быть заполнены.")
+    # Проверка на ввод цифр и спец. символов в поля имя, фамилия и отчество
+    if not re.match(r'^[a-zA-Zа-яА-ЯёЁ]*$', name) or not re.match(r'^[a-zA-Zа-яА-ЯёЁ]*$', second_name) or not re.match(r'^[a-zA-Zа-яА-ЯёЁ]*$', patronic):
+        tk.messagebox.showerror("Ошибка", "Имя, фамилия и отчество не должны содержать цифры или специальные символы.")
         return
+
+    # Проверка на ввод только цифр в поле возраста
+    if not age.isdigit():
+        tk.messagebox.showerror("Ошибка", "Возраст должен содержать только цифры.")
+        return
+
+    # Преобразование возраста в целое число
+    age = int(age)
+
+    # Проверка на допустимый возраст
+    if age < 12 or age > 100:
+        tk.messagebox.showerror("Ошибка", "Извините, вы не подходите по возрасту!")
+        return
+
+    cursor.execute("SELECT MAX(id_Players) FROM Players")
+    last_id = cursor.fetchone()[0]
+
+    if last_id is None:
+        last_id = 0
+
+    new_number = last_id + 1
 
     cursor.execute("INSERT INTO Players (name, second_Name, patronic, sex, age, specialization) VALUES (?, ?, ?, ?, ?, ?)",
                    (name, second_name, patronic, sex, age, specialization))
     connection.commit()
+
+    tk.messagebox.showinfo("Успех", f"Успешная регистрация, ваш номер: {new_number}")
 
     for entry in entries.values():
         if isinstance(entry, tk.StringVar):
@@ -353,6 +489,7 @@ def save_data(entries, tree):
     update_players_tree(tree)
 
     tk.messagebox.showinfo("Успех", "Вы успешно подали заявку!")
+
 def update_players_tree(tree):
     for item in tree.get_children():
         tree.delete(item)
